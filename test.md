@@ -17,11 +17,11 @@ examples. Their unique pattern, present in each photo, is the thread by which we
 
 <br>
 
-<figure align="center">
-  <img src="readme_media/images_within_individual.svg"  width="75%">
+<p align="center">
+  <img src="readme_media/images_within_individual.svg" width="75%">
   <figcaption>Fig. 1: An individual exists in the photographic record as a collection of photos from several occasions, with
 multiple nicknames across all capture events.</figcaption>
-</figure>
+</p>
 
 <br>
 
@@ -39,11 +39,11 @@ later photos are compared against an ever-increasing pool of potential matches.
 
 <br>
 
-<figure align="center">
+<p align="center">
   <img src="readme_media/order_of_comparisons.svg" width="75%">
   <figcaption>Fig. 2: Photographic records are generally assessed looking backwards in time. Individuals/patterns captured later are
 compared against earlier occasions. Colourful polygons represent unique identifying patterns captured in each occasion.</figcaption>
-</figure>
+</p>
 
 <br>
 
