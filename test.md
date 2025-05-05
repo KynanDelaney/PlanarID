@@ -15,8 +15,13 @@ The language around identifying individuals in a photographic record can get con
 the hierarchy of how we collect data. An individual _contains_ several within-occasion names and maybe dozens of photographic
 examples. Their unique pattern, present in each photo, is the thread by which we link up all of these photographic examples. 
 
+<br>
 
-<img align="center" src="readme_media/images_within_individual.svg" width="75%">
+<figure>
+  <img src="readme_media/images_within_individual.svg"  width="75%">
+  <figcaption>Fig. 1: An individual exists in the photographic record as a collection of photos from several occasions, with
+multiple nicknames across all capture events.</figcaption>
+</figure>
 
 <br>
 
@@ -24,14 +29,21 @@ examples. Their unique pattern, present in each photo, is the thread by which we
 
 Generally, we don't know in advance whether an individual was captured multiple times. Instead we ask "have we seen this 
 individual/pattern elsewhere in our photographic record?". Different individual-recognition packages approach this question
-in different ways but, generally, their methods are roughly similar.
+in different ways but, generally, their methods are roughly similar. For simplicity, we illustrate the general idea with 
+colourful geometric shapes standing in for unique identifying patterns.
 
 Something that may seem obvious, but can be overlooked is that photographic records are generally processed backwards; 
 a pattern photographed on occasion two can be compared to patterns photographed on occasion one and patterns from occasion 
 three can be compared against both occasions one and two. As we sample on more occasions, and the photographic record grows,
 later photos are compared against an ever-increasing pool of potential matches.
 
-<img src="readme_media/order_of_comparisons.svg" width="75%">
+<br>
+
+<figure>
+  <img src="readme_media/order_of_comparisons.svg" width="75%">
+  <figcaption>Fig. 2: Photographic records are generally assessed looking backwards in time. Individuals/patterns captured later are
+compared against earlier occasions.</figcaption>
+</figure>
 
 <br>
 
@@ -42,18 +54,30 @@ that (or those) against all previous photos in our photographic record.
 Here, we take our blue triangle from occasion 3, and compare against our photographic record of of colourful polygons 
 captured on occasion two.
 
-<img src="readme_media/focal_and_query_shapes.svg" width="75%">
+<br>
+
+<figure>
+  <img src="readme_media/focal_and_query_shapes.svg" width="75%">
+  <figcaption>Fig. 3: A focal individual/pattern (left) might be compared against a photographic record full of distinct 
+patterns (right).</figcaption>
+</figure>
 
 <br>
 
 <br>
 
 Some algorithm compares our focal pattern against all other patterns in the photographic record and determines how well 
-they match. In the graphic below thicker lines denote a better match. In this example, we can imagine that our chosen algorithm
+they match. In this example, we can imagine that our chosen algorithm
 compares patterns by colour, number of vertices, and the angle of those vertices. On shape alone, our two triangles in the 
 photographic record match very closely to the focal pattern, but only one is the right colour!
 
-<img src="readme_media/shape_pairwise_comparison.svg" width="50%">
+<br>
+
+<figure>
+  <img src="readme_media/shape_pairwise_comparison.svg" width="50%">
+  <figcaption>Fig. 4: An example of pairwise comparisons between the focal pattern/individual and potential matching 
+patterns/individuals in the photographic record. Thicker lines denote a better match.</figcaption>
+</figure>
 
 <br>
 
@@ -63,7 +87,13 @@ Depending on the sophistication or bravery of the software used, the system will
 matches for the focal pattern in the photographic record (A), or sort the possible matches and present the best N matches for
 the users consideration (B). 
 
-<img src="readme_media/sorted_vs_matched_shapes.svg" width="75%">
+<br>
+
+<figure>
+  <img src="readme_media/sorted_vs_matched_shapes.svg" width="75%">
+  <figcaption>Fig. 5: Two outcomes of individual recognition systems - A) the system determines positive matches or the absence of 
+a suitable match automatically; B) the system sorts potential matches for the user to confirm or reject.</figcaption>
+</figure>
 
 <br>
 
