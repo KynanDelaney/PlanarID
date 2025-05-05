@@ -26,9 +26,21 @@ Generally, we don't know in advance whether an individual was captured multiple 
 individual/pattern elsewhere in our photographic record?". Different individual-recognition packages approach this question
 in different ways but, generally, their methods are roughly similar.
 
-First, we can take a photographic example (or many photographic examples) of an individual in a given week and compare 
-that (or those) against all other photos in our photographic record. Here, we take our blue triangle from a given occasion, 
-and compare against our photographic record of of colourful polygons.
+Something that may seem obvious, but can be overlooked is that photographic records are generally processed backwards; 
+a pattern photographed on occasion two can be compared to patterns photographed on occasion one and patterns from occasion 
+three can be compared against both occasions one and two. As we sample on more occasions, and the photographic record grows,
+later photos are compared against an ever-increasing pool of potential matches.
+
+<img src="readme_media/order_of_comparisons.svg" width="75%">
+
+<br>
+
+<br>
+
+First, we can take a photographic example (or many photographic examples) of an individual on a given occasion and compare 
+that (or those) against all previous photos in our photographic record. 
+Here, we take our blue triangle from occasion 3, and compare against our photographic record of of colourful polygons 
+captured on occasion two.
 
 <img src="readme_media/focal_and_query_shapes.svg" width="75%">
 
@@ -37,7 +49,9 @@ and compare against our photographic record of of colourful polygons.
 <br>
 
 Some algorithm compares our focal pattern against all other patterns in the photographic record and determines how well 
-they match. In the graphic below thicker lines denote a better match.
+they match. In the graphic below thicker lines denote a better match. In this example, we can imagine that our chosen algorithm
+compares patterns by colour, number of vertices, and the angle of those vertices. On shape alone, our two triangles in the 
+photographic record match very closely to the focal pattern, but only one is the right colour!
 
 <img src="readme_media/shape_pairwise_comparison.svg" width="50%">
 
@@ -47,7 +61,18 @@ they match. In the graphic below thicker lines denote a better match.
 
 Depending on the sophistication or bravery of the software used, the system will then either automatically assign positive
 matches for the focal pattern in the photographic record (A), or sort the possible matches and present the best N matches for
-the users consideration (B).
+the users consideration (B). 
 
 <img src="readme_media/sorted_vs_matched_shapes.svg" width="75%">
 
+<br>
+
+<br>
+
+Sorting patterns based on similarity is relatively straight-forward. However, automatic matching requires some 
+fine-tuning of thresholds to determine a positive match from just a very similar pattern. The green triangles above are 
+very similar to our focal pattern. So a suitable algorithm would need to reject a perfectly-matching silhouette that happens
+to have the wrong line colour. As patterns get more complex, and the quality of patterns (blurry photos, images at oblique 
+angles, variation in zoom, loss of colour fidelity due to ambient lighting) it becomes harder to get this right.
+
+Our approach favours the sorting method, to leave final decision-making on matching patterns to the user.
