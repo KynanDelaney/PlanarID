@@ -17,7 +17,7 @@ examples. Their unique pattern, present in each photo, is the thread by which we
 
 <br>
 
-<figure>
+<figure align="center">
   <img src="readme_media/images_within_individual.svg"  width="75%">
   <figcaption>Fig. 1: An individual exists in the photographic record as a collection of photos from several occasions, with
 multiple nicknames across all capture events.</figcaption>
@@ -39,10 +39,10 @@ later photos are compared against an ever-increasing pool of potential matches.
 
 <br>
 
-<figure>
+<figure align="center">
   <img src="readme_media/order_of_comparisons.svg" width="75%">
   <figcaption>Fig. 2: Photographic records are generally assessed looking backwards in time. Individuals/patterns captured later are
-compared against earlier occasions.</figcaption>
+compared against earlier occasions. Colourful polygons represent unique identifying patterns captured in each occasion.</figcaption>
 </figure>
 
 <br>
@@ -56,7 +56,7 @@ captured on occasion two.
 
 <br>
 
-<figure>
+<figure align="center">
   <img src="readme_media/focal_and_query_shapes.svg" width="75%">
   <figcaption>Fig. 3: A focal individual/pattern (left) might be compared against a photographic record full of distinct 
 patterns (right).</figcaption>
@@ -73,7 +73,7 @@ photographic record match very closely to the focal pattern, but only one is the
 
 <br>
 
-<figure>
+<figure align="center">
   <img src="readme_media/shape_pairwise_comparison.svg" width="50%">
   <figcaption>Fig. 4: An example of pairwise comparisons between the focal pattern/individual and potential matching 
 patterns/individuals in the photographic record. Thicker lines denote a better match.</figcaption>
@@ -89,7 +89,7 @@ the users consideration (B).
 
 <br>
 
-<figure>
+<figure align="center">
   <img src="readme_media/sorted_vs_matched_shapes.svg" width="75%">
   <figcaption>Fig. 5: Two outcomes of individual recognition systems - A) the system determines positive matches or the absence of 
 a suitable match automatically; B) the system sorts potential matches for the user to confirm or reject.</figcaption>
