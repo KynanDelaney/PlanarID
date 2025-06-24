@@ -390,7 +390,7 @@ Some key details of these parameters, their consequences, and use are outlined b
 <br>
 
 ### Splitting images into _pattern_ and _not pattern_
-This involves taking high quality and/or colour-corrected images and using colour thresholding to extract regions of the
+This involves taking high quality and/or colour-corrected images and using colour thresholding (Figure 13) to extract regions of the
 _pattern_. The process can be visualised in the shiny UI and all possible values played with. When suitable values have 
 been chosen, this process can be applied at scale. This step results in a cropped version of the original image and a 
 _mask_ (a twin image containing only the pattern, with other details blacked out).
@@ -409,6 +409,18 @@ _mask_ (a twin image containing only the pattern, with other details blacked out
 | min_area        | The minimum expected area (in pixels) of each identifying mark/ colour-patch. Used to filter out dirt, noise or visual artefacts |  Depending on the magnification and resolution of images; Integer >= 100 |
 | mult            | A scalar indicating how much area around the identifying pattern should be included in processed masks and images                |                                                               Float >= 1 |
 | cutoff_size     | The total size (in pixels) a correctly-processed image should be, after colour-based segmentation and cropping                   | Depending on the magnification and resolution of images; Integer >= 100  |
+
+<br>
+
+<table>
+  <tr>
+    <td align="center"><img src="readme_media/colour_space_plot.png" height="75%"><br><sub>H[0:179] S[0:255] V[0:255]</sub></td>
+    <td align="center"><img src="readme_media/filtered_colour_space_plot.png" height="75%"><br><sub> H[11:40] S[75:240] V[80:240]</sub></td>
+  </tr>
+</table>
+<p align="center"><em>Figure 13: The full HSV colour space and an example of filtering the HSV space to a range of values, 
+as in our colour-thresholding.</em></p>
+
 
 <br>
 
