@@ -4,13 +4,15 @@ For a practical guide on how to analyse a photographic record, we have included 
 the burying beetle, *Nicrophorus vespilloides*. The tutorial photographic record contains 22 photos of three individuals (Figure 1), 
 imaged on ten different dates. These photos have been appropriately named with the ```[date]_[within-week name]_[example]``` 
 format. The`.csv` (`tutorial_df`) contains information about individual sex, within-week names, date of "capture" and
-body size. Together, this is everything we need to get started identifying individuals in a photographic record.
+body size. These data have been provided to mimic realistic capture data - size and sex data
+
+Together, this is everything we need to get started identifying individuals in a photographic record.
 
 
 Tutorial contents:
 
-    - tutorial images folder: 22 images of 3 individuals taken across 10 sampling Occasions.
-    - tutorial_df: A `.csv` of "capture data" that includes within-week names, date of capture, individual sex, and body size (Table 1).
+- tutorial images folder: 22 images of 3 individuals taken across 10 sampling Occasions. 
+- tutorial_df: A `.csv` of "capture data" that includes within-week names, date of capture, individual sex, and body size (Table 1).
 
 <br>
 
@@ -49,13 +51,12 @@ In the IDE (we have chosen Pycharm Community Edition for this example), double c
 on the left tab. In the script editor, name the project `Tutorial` in the highlighted line (line 9; Figure 2). Now we run
 the script:
 
-    1. In the terminal in the IDE, run the following command:
+1. In the terminal in the IDE, run the following command:
 
         `python project_folder_setup.py`
+OR
 
-    OR
-
-    2. Click the run script button in the top right of the Pycharm IDE
+2. Click the run script button in the top right of the Pycharm IDE
 
     
 
@@ -90,9 +91,7 @@ In the IDE, we double click on the `shiny_home.py` script on the left tab. In th
 <br>
 
 
-Now we launch the app:
-
-    In the terminal in the IDE, run the following command:
+Now we launch the app; in the terminal in the IDE, run the following command:
 
     `shiny run shiny_home.py`
 
@@ -105,6 +104,8 @@ folder and select any image to be rendered in the app. We can then start setting
 fingerprints.
 
 Good starting values for annotating the elytral pattern in these beetles are outlined in Table 2.
+
+<br>
 
 <p align="left"><em>Table 2: Colour thresholds for the tutorial photographic record. </em></p>
 

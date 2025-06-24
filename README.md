@@ -1,60 +1,66 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 # PlanarID
 
-Many animals have characteristic colour patterns and other markings that distinguish individuals from each other. 
-PlanarID is a browser-based shiny app and collection of python pipeline scripts that facilitate individual recognition 
-from photographs, leveraging unique, disrete colour markings on hard-bodied insects and other invertebrates.
+Many animals have characteristic colour patterns and markings that vary amongst individuals. PlanarID is a browser-based 
+shiny app and collection of python pipeline scripts that facilitate individual recognition from photographs, leveraging 
+unique, discrete colour markings on small, hard-bodied insects and other invertebrates.
 
-This system is intended to work with small, hard-bodied animals that can be handled and photographed in a consistent manner.
-This pipeline uses colour-based thresholding techniques to split images into regions of _pattern_ and _not pattern_ before 
-calculating some meaningful _fingerprint_ for an individual. As such, animals (chiefly insects, but hard-bodied animals 
-more generally) with discrete colour patterns - bold stripes, obvious wing veining, or ink-blot style blobs - are the 
-intended focus of this pipeline. Animals with diffuse patterns - where colours or pattern regions fade into each other 
-rather than having hard borders - may still be analysed with this set-up, but performance may be poor!
+This system is intended to work with animals that can be handled and photographed in a consistent manner. This pipeline 
+uses colour-based thresholding techniques to split images into regions of pattern and not pattern before calculating some
+meaningful _fingerprint_ for an individual. As such, animals with discrete colour patterns (e.g., bold stripes, obvious 
+wing veining, or ink-blot style blobs) are its intended focus. Animals with diffuse patterns where colours or pattern 
+regions fade into each other rather than having hard borders may still be analysed with this set-up, but performance may
+be poor.
 
-We outline the general principles at play in utilising a photographic record, a workflow for collecting and pre-processing 
-images suitable for subsequent _fingerprinting_ and analysis. Additionally, we provide a generic narrative accounting of 
-decisions made in curating and exploring a photographic record.
+Below, we outline the general principles at play in utilising a photographic record. We also describe a workflow for 
+collecting and preprocessing images suitable for feeding into our pipeline.  Additionally, we provide a generic narrative
+accounting of decisions made in curating and exploring a photographic record.
 
 <br>
 
-## Animal- / Pattern-recognition simplified
+## Pattern-recognition simplified - a generic overview
 
 The purpose of mark-recapture photo identification methods is to take a large photographic record of unknown individuals 
-and, using unique identifiers and markings, piece together which of those individuals were observed on multiple occasions.
-In the course of our photography and in-person observations we may need to ascribe nicknames to these erstwhile unknown 
-individuals. Naming animals is fun and useful for keeping records in line! Over time, they may even become familiar to us
-but the photographic record is naive to our experience.
+and, by using unique identifiers and markings, piece together which of those individuals were observed on multiple 
+occasions. In the course of photography and in-person observations, one may wish to ascribe nicknames to these erstwhile
+unknown individuals. Naming animals is fun and useful for keeping records in line! Over time, they may even become 
+familiar to us, but the photographic record is naive to our experience.
 
-I mention this only to clarify that photo mark-recapture methods match _patterns_, rather than individuals. An individual 
-may have been photographed on five separate occasions. Depending on the study system, that individual may have been given a 
-different nickname on each of those occasions. Maybe, on each occasion, that individual was photographed three times. This
-gives us 15 photographic examples, from 5 occasions, with 5 different nicknames, all of a single individual.
+We wish to clarify that photo mark-recapture methods match _patterns_, rather than _individuals_. An individual may have
+been photographed on five separate occasions. Depending on the study system, that individual may have been given a different 
+nickname on each of those occasions. On each occasion, perhaps that individual was photographed three times. This gives 
+us 15 photographic examples, three from each of five occasions (with five different nicknames), all taken from a single 
+individual.
 
 The language around identifying individuals in a photographic record can get confusing very quickly if we lose track of 
-the hierarchy of how we collect data. An individual _contains_ several within-occasion names and dozens of photographic
-examples may be nested within each of these. Their unique pattern, present in each photo, is the thread by which we link 
-up all of these photographic examples to assign an ultimate, true ID. 
+the hierarchy of how we collect data. An individual _contains_ several within-occasion names, and dozens of photographic 
+examples may be nested within each of these names. Their unique pattern, present in each photo, is the thread by which we
+link all these photographic examples to assign an ultimate, true ID.
 
 <br>
 
 <p align="center">
   <img src="readme_media/images_within_individual.svg" width="75%" style="border: 1px solid #005F6B; padding: 5px;">
   <figcaption align="center">Fig. 1: An individual exists in the photographic record as a collection of photos from several 
-occasions, withmultiple nicknames across all capture events.</figcaption>
+occasions, with multiple nicknames across all capture events.</figcaption>
 </p>
 
 <br>
 
 <br>
 
-Generally, we don't know in advance whether an individual was captured multiple times. Instead we ask "have we seen this 
-individual/pattern elsewhere in our photographic record?". Different individual-recognition packages approach this question
-in different ways but, generally, their methods are roughly similar. For simplicity, we illustrate the general idea with 
-colourful geometric shapes standing in for unique identifying patterns.
+Generally, we don't know in advance whether an individual was captured multiple times. Instead, we ask "have we seen this
+individual/pattern elsewhere in our photographic record?" Different individual-recognition packages approach this question
+in different ways, but their methods can be roughly similar. For simplicity, we illustrate the general idea with colourful
+geometric shapes standing in for unique identifying patterns.
 
-Something that may seem obvious, but can be overlooked is that photographic records are generally processed backwards; 
-a pattern photographed on occasion two can be compared to patterns photographed on occasion one and patterns from occasion 
-three can be compared against both occasions one and two. As we sample on more occasions, and the photographic record grows,
+This may seem obvious, but it can be forgotten that photographic records are generally processed backwards; a pattern 
+photographed on Occasion 2 (see Fig 2) can be compared to patterns photographed on Occasion 1, and patterns from Occasion
+3 can be compared against both previous Occasions only. As we sample over more occasions and the photographic record grows,
 later photos are compared against an ever-increasing pool of potential matches.
 
 <br>
@@ -62,16 +68,17 @@ later photos are compared against an ever-increasing pool of potential matches.
 <p align="center">
   <img src="readme_media/order_of_comparisons.svg" width="75%" style="border: 1px solid #005F6B; padding: 5px;">
   <figcaption align="center">Fig. 2: Photographic records are generally assessed looking backwards in time. Individuals/patterns 
-captured later are compared against earlier occasions. Colourful polygons represent unique identifying patterns captured in each occasion.</figcaption>
+captured later are compared against earlier occasions. Colourful polygons represent unique identifying patterns captured 
+in each occasion.</figcaption>
 </p>
 
 <br>
 
 <br>
 
-First, we can take a photographic example (or many photographic examples) of an individual on a given occasion and compare 
-that (or those) against all previous photos in our photographic record. Here, we take our blue triangle from occasion 3, 
-and compare against our photographic record of of colourful polygons captured on occasion two.
+To start finding matches in an existing photographic record, one can take one or more photographic examples of an individual 
+on a given occasion and compare those against all previous photos in our photographic record. Here, we take our blue 
+triangle from Occasion 3 and compare against our photographic record of colourful polygons captured on Occasion 2.
 
 <br>
 
@@ -85,10 +92,10 @@ full of distinct patterns (right).</figcaption>
 
 <br>
 
-Some algorithm compares our focal pattern against all other patterns in the photographic record and determines how well 
-they match. In this example (Fig. 4), we can imagine that our chosen algorithm compares patterns by colour, number of vertices,
-and the angle of those vertices. On shape alone, our two triangles in the photographic record match very closely to the 
-focal pattern, but only one is the right colour!
+Some (at this point, imaginary)  algorithm compares our focal pattern against all other patterns in the photographic 
+record and determines how well they match. Using our example (Fig. 4), we can imagine that our chosen algorithm compares
+patterns by colour, number of vertices, and the angle of those vertices. On shape alone, our two triangles in the 
+photographic record match very closely to the focal pattern, but only one is the right colour!
 
 <br>
 
@@ -103,8 +110,8 @@ matching patterns/individuals in the photographic record. Thicker lines denote a
 <br>
 
 Depending on the sophistication or bravery of the software used, the system will then either automatically assign positive
-matches for the focal pattern in the photographic record (Fig. 5A), or sort the possible matches and present the best N matches for
-the users consideration (Fig. 5B). 
+matches for the focal pattern in the photographic record (Fig. 5A) or sort the possible matches and present the best N 
+matches for the user’s consideration (Fig. 5B). 
 
 <br>
 
@@ -119,21 +126,23 @@ or reject.</figcaption>
 
 <br>
 
-Sorting patterns based on similarity is relatively straight-forward. However, automatic matching requires some 
-fine-tuning of thresholds to determine a positive match from just a very similar pattern. The green triangles above are 
-very similar to our focal pattern. So a suitable algorithm would need to reject a perfectly-matching silhouette that happens
-to have the wrong line colour. As patterns get more complex, and the quality of patterns declines (blurry photos, images at oblique 
-angles, variation in zoom, loss of colour fidelity due to ambient lighting) it becomes harder to get this right.
+Sorting patterns based on similarity is relatively straight-forward. However, automatic matching requires some fine-tuning
+of thresholds to determine a definitively “correct” pattern from a very similar but “incorrect” pattern . The green 
+triangles above are very similar to our focal pattern. In this case, a suitable algorithm would need to reject a 
+perfectly-matching silhouette that happens to have the wrong line colour. As patterns get more complex and/or the quality
+of patterns declines (blurry photos, images at oblique angles, variation in zoom, loss of colour fidelity due to ambient 
+lighting), it becomes harder to get this right.
 
-Our approach favours the sorting method, to leave final decision-making on matching patterns to the user.
+Our approach favours the sorting method (B): to leave final decision-making on matching patterns to the user.
+
 
 <br>
 
 ## Taking high-quality images and curating a photographic record
 
-Photographs should be taken from consistent angles and distances from a single subject under relatively similar lighting 
-conditions. We had great success with a static imaging platform - a flat surface at fixed elevation, distance, and angle 
-to a tripod-mounted Canon 500D, flanked by two 5500 Kelvin LED panels (Fig. 6). We used consistent shutter speed, ISO, and F-stop 
+Photographs should be taken using consistent angles and distances from a single subject under similar lighting conditions.
+We had great success with a static imaging platform: a flat surface at fixed elevation, distance, and angle to a 
+tripod-mounted Canon 500D flanked by two 5500 Kelvin LED panels (Fig. 6). We used consistent shutter speed, ISO, and F-stop
 for all photography sessions. Photographs of colour calibration cards under these same angles and distances should be 
 captured periodically within each photography session.
 
@@ -149,66 +158,87 @@ lighting.</figcaption>
 
 <br>
 
-***For the photography step, I recommend first photographing a label/piece of paper with the individuals' within-week ID, 
-followed by a series of photos of that individual. Continue this process for each individual in turn - photo of their name 
-followed by photos of them. This minimises errors and simplifies data collection in the moment and annotation later!.***
+***For the photography step, we recommend photographing first a label/piece of paper with the individuals' within-week ID,
+followed by a series of photos of that individual. Continue this process for each individual in turn – photograph a label,
+then photograph the corresponding individual. This  order of photography minimises errors and simplifies data collection!***
 
-Before adding photos to a project directory (in the unprocessed_photos subfolder) for _fingerprinting_ images should first 
-be informatively named. We want some way to group many examples (i.e., many photos) of an individual by some within-week name. 
-Currently, a naming format of `[Date]_[within-week name]_[example and additional information]` is necessary.
-This facilitates intuitive grouping of photos in the photographic record by some within-week name, and also connecting 
-photos with corresponding data that we may have in a `.csv`.
+Before adding photos to a project directory (in the unprocessed_photos subfolder), images should first be informatively 
+named.  We want some way to group many examples (i.e., many photos) of an individual by some within-week name. Currently,
+a naming format of ```[Date]_[within-week name]_[example and additional information]``` is necessary. This facilitates intuitive
+grouping of photos in the photographic record by some within-week name and also connecting photos with corresponding data 
+that we may have in a .csv.
 
-Where possible, the white balance of images should be standardised against a grey card, or fully colour-corrected against
-a colour-checker card. Both naming and colour correcting can be accomplished using a image-processing program (e.g., `darktable`).
+Where possible, the white balance of images should be standardised against a grey card or fully colour-corrected against a 
+colour-checker card. Both naming and colour correcting can be accomplished using an image-processing program (e.g., `darktable`).
+
 
 <br>
 
 ### Example data collection
-In a hypothetical field site we may plan to catch and photograph as many individuals as possible once a week for a period 
-of three months. We are working with a species with distinct markings that humans can't easily tell apart, but computer 
-vision algorithms can. We have 12 distinct sampling sessions, and 11 sessions in which recaptures are possible. Obviously
-all individuals caught in the very first week have to be novel individuals!  
 
-In the first week, lets imagine we caught 5 individuals - 3 males and 2 females.
-We need to name these individuals something to keep our records straight for that week. For the first male, we might call
-him "1M"; the second male "2M"; the first female "1F". Or, we could simply name these individuals "1":"5" or "A":"E". 
-To maintain consistency in naming for the following 11 weeks, we need to choose a naming convention that reflects _when_ 
-an individual is caught, even though we don't yet know their true identity. To this end, we add a suffix of date/time of 
-capture - for example ```Week1_2M```, or ```[Month-Day]_2M```.
+At some hypothetical field site, we may plan to catch and photograph as many individuals as possible once a week for a 
+period of three months. We are working with a species with distinct markings that humans can't easily tell apart, but 
+computer vision algorithms can. We have 12 distinct sampling sessions, and 11 sessions in which recaptures are possible.
+Obviously, all individuals caught in the very first week must be novel individuals!
+
+In the first week, let’s imagine we caught 5 individuals - 3 males and 2 females. We need to name these individuals 
+something to keep our records straight for that week. For the first male, we might call him "1M"; the second male "2M";
+the first female "1F". Or, we could simply name these individuals "1":"5"  or "A":"E", ignoring sex entirely in the naming
+scheme. To maintain consistency in naming for the following 11 weeks, we need to choose a naming convention that reflects
+_when_ an individual is caught, even though we don't yet know their true identity. To this end, we add a prefix  of date/time
+of capture - for example ```Week1_2M``` , or ```[Month-Day]_2M``` .
 
 As we capture and photograph individuals, we can note their within-week name, and perhaps record size, sex, and other 
-useful data about that individual in a `.csv`. A suitable template `.csv` is generated on project directory creation in `/data`.
+useful data about that individual in a `.csv` . A suitable template `.csv` is generated on project directory creation in `/data`.
 We might photograph one individual several times in a session, to make sure the individual is in focus and absent any glare
 or visual artefacts that may obscure the identifying pattern. For an individual with two examples (i.e., photos) in the 
-same session the naming convention for photos here then might be ```[Month-Day]_2M_1``` and ```[Month-Day]_2M_2```. The 
-format ```[Date]_[Within-week name]_[Example]``` makes it easy to distinguish between multiple photos of the same individual,
-and still connect our collected data to the photographic record.
+same session the naming convention for photos here then might be ```[Month-Day]_2M_1``` and ```[Month-Day]_2M_2```. The format 
+```[Date]_[Within-week name]_[Example]``` makes it easy to distinguish between multiple photos of the same individual while 
+still connecting our collected data to the photographic record.
 
-When it comes time to colour-correct and name these photos, we can take these obvious series of photos, separated by labels, 
-and apply tags or other image meta-data to each image. This can easily be done using `darktable` and other image processing
-programs, which can automatically append ```[Example]``` to file names to prevent file naming conflicts.
+When it comes time to colour-correct and name these photos, we can take these series  of photos – a label containing the
+within-week name and date, followed by images of the corresponding individual - and apply tags or other image meta-data 
+to each image. This can be done easily using `darktable` and other image processing programs, which can automatically use 
+tags to name exported photos and append ```[Example]``` to filenames to prevent file naming conflicts.
 
-The following week, when we sample again, lets say we caught only two individuals - a male and a female. We can't recognise 
-them by eye, so they need generic names. We can choose to call them "1M" and "1F", simply "1" and "2", or by naming them 
-as "6" and "7", being the 6th and 7th capture events. I favour the "1M" "2F" approach, as it reduces the complexity of 
-data collection in the field/ at the moment of photography. Regardless of choice, adding their date of capture as a suffix
-makes a new, unique name (e.g., ```Week2_1M``` or ```[Month-Day]_1M```).
+The following week when we sample again, let’s say we caught only two individuals - a male and a female. We can't recognise
+them by eye, so they need generic names. We can choose to call them "1M" and "1F", simply "1" and "2", or by naming them as
+"6" and "7", being the 6th and 7th capture events. I favour the "1M" "2F" approach, as it reduces the complexity of data 
+collection in the field/ at the moment of photography. Regardless of choice, adding their date of capture as a suffix makes
+a new, unique name (e.g., ```Week2_1M``` or ```[Month-Day]_1M```). 
 
-We can continue capturing, naming, photographing, and recording data about individuals caught every week. 
-When it comes time to identify individuals that have been recaptured across sampling sessions, we can use our standardised 
-photos, collected data from our `.csv`, and consistent naming convention in the shiny app and pipeline. We may choose to 
-start by comparing the individuals caught in week two with the individuals caught in week one, to see if either the male 
-or female that week had previously been encountered. We may instead choose to process the entire photographic record in 
-one go - comparing week two against week one, and week three against weeks one and two, and so on. In practice, we are 
-trying to find whether ```Week3_4M``` is the same individual as ```Week1_1M``` by comparing the patterns we imaged and
-_fingerprints_ we extracted. Matches are confirmed or rejected in the GUI. A list of within-week aliases that an individual
-was assigned is the output.
+We can continue capturing, naming, photographing, and recording data from individuals caught every week. When it comes 
+time to identify individuals that have been recaptured across sampling sessions, we can use our standardised photos, 
+collected data from our `.csv`, and consistent naming convention in the shiny app and pipeline. We may choose to start by
+comparing the individuals caught in week two with the individuals caught in week one to see if either the male or female
+that week had previously been encountered. We may instead choose to process the entire photographic record in one go - 
+comparing week two against week one, and week three against weeks one and two, and so on. In practice, we are trying to
+find whether ```Week3_4M``` is the same individual as ```Week1_1M``` by comparing the patterns we imaged and 
+_fingerprints_ we extracted. 
+
+Matches are confirmed or rejected in the GUI. A list of within-week aliases that an individual was assigned is the output.
+
 
 <br>
 
 ## Getting started with PlanarID
-I recommend installing an IDE (Pycharm, Spyder, etc.) and cloning this repository. 
+I recommend installing an IDE (Pycharm Community Edition, Spyder, etc.) and cloning this repository. 
+
+<table>
+  <tr>
+    <td align="left">
+      <a href="https://www.jetbrains.com/pycharm/download/?section=windows" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/PyCharm_Logo.jpg" width="50%">
+      </a>
+    </td>
+    <td align="left">
+      <a href="https://www.spyder-ide.org/" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Spyder_logo.svg" width="50%">
+      </a>
+    </td>
+  </tr>
+</table>
+
 These scripts hav been tested using Python 3.9 and Python 3.12, on both Ubuntu 22.04 and Windows 11. 
 However, development was mainly conducted on a Linux machine; for best performance, Linux is preferred!  
 
@@ -324,14 +354,28 @@ The **Individual Matching** page takes the output of pairwise comparisons (a `.c
 user, with buttons for navigating, choosing which _fingerprinting_ algorithm to sort by,and confirming matches in the 
 photographic record.
 
+<br>
+
+<p align="center">
+  <img src="readme_media/PlanarID_individual_matching.png" width="75%" style="border: 1px solid #005F6B; padding: 5px;">
+  <figcaption align="center">Fig. 11: The final step of identifying individuals that were recaptured. The user selects
+a csv outputted from "Run Pairwise Comparisons" and manually compares a chosen number of best-matching options for each
+focal individual according to 1 of 4 algorithms at a time. The presence or absence of a matching image is confirmed and 
+written to a results .csv. </figcaption>
+</p>
+
+<br>
+
+<br>
+
 The **Within-Individual Quality Control** page takes the output of within-individual comparisons (a `.csv` file) and shows
-network graphs of apparent within-individual dissimilarity and a gallery of all images of the chosen individual (Fig. 11).
+network graphs of apparent within-individual dissimilarity and a gallery of all images of the chosen individual (Fig. 12).
 
 <br>
 
 <p align="center">
   <img src="readme_media/PlanarID_quality_control.png" width="75%" style="border: 1px solid #005F6B; padding: 5px;">
-  <figcaption align="center">Fig. 11: A network graph of within-individual photographic example similarity and a gallery 
+  <figcaption align="center">Fig. 12: A network graph of within-individual photographic example similarity and a gallery 
 of relevant images for quality-control. In the graph, correctly named images (ascribed to the right individual) should form
 a cluster, and obvious outliers will be removed from that cluster.</figcaption>
 </p>
@@ -398,13 +442,14 @@ while accepted error in body size is a saved parameter (below).
 <br>
 
 ### Conducting pairwise comparisons
-This stage takes the output of the previous step (a `.csv` file) and conducts the appropriate comparisons. 
-A _distance_ value is generated for each pairwise comparison according to one or more of four _fingerprint_ algorithms. 
-A large _distance_ means two images/_patterns_ are very dissimilar, thus unlikely to contain the same individual, while 
-smale _distances_ indicate two images/_fingerprints_ are very similar. This produces two `.csv` files - the complete 
-output of all pairwise comparisons and their _distance_ values (potentially millions of rows long), and a filtered subset
-that contains the N best matches for each focal individual according to all chosen algorithms (a smaller, more manageable file).
-This second, filtered file is used in the **Individual Matching** page.
+
+This stage takes the output of the previous step (a `.csv` file) and conducts the appropriate comparisons. A _distance_ value 
+is generated for each pairwise comparison according to one or more of four _fingerprint_ algorithms. A large _distance_ means 
+two images/patterns are very dissimilar and thus unlikely to contain the same individual, while small _distances_ indicate 
+two images/fingerprints are very similar and thus potentially are images of the same individual at two points in time. 
+This produces two `.csv` files - the complete output of all pairwise comparisons and their _distance_ values (potentially 
+millions of rows long), and a filtered subset that contains the N best matches for each focal individual according to all
+chosen algorithms (a smaller, more manageable file). This second, filtered file is used in the ***Individual Matching*** page.
 
 
 | Parameter                     | Meaning/Consequence                                                                                                                         |          Possible Values |
