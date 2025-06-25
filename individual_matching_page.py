@@ -142,7 +142,7 @@ def individual_matching_page_server(input, output, session, BASE_DIR):
         df.to_csv(file_path, index=False, quoting=1)
 
         # Update current dataset
-        new_data = process_uploaded_data(file_path, input.number_matches_considered())
+        new_data = process_uploaded_data(file_path, input.selected_algorithm(), input.number_matches_considered())
 
         # Adjust index if necessary
         new_index = min(current_index(), max(0, len(new_data) - 1))
