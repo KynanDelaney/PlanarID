@@ -8,6 +8,8 @@ from pathlib import Path
 import multiprocessing
 import shutil
 import sys
+import psutil # number of logical cores
+
 
 ########################################################################################################################
 ########################################## GUI-DEFINED PATHS AND VALUES ################################################
@@ -110,12 +112,17 @@ def process_image(image_name):
         # Read the mask - path must be passed as a string
         mask1 = cv.imread(str(image_path))
         print(f"Working on {image_name}. Mask shape: {mask1.shape}")
-    except:
+
+        if mask1 is None:
+            raise FileNotFoundError(f"Image {image_path} could not be loaded. Check file existence and format.")
+
+    except Exception as e:
         relocate(image_name)
-        print(f"This image may not exist - {image_name}")
+        err_message = f"This image may not exist or could not be read - {image_name}. Error: {str(e)}"
+        print(err_message)
         error_log_file = BASE_DIR / "logs" / "fingerprinting_error_logs.txt"
         with open(error_log_file, 'a') as f:
-            f.write(f'\n{image_name}. This image may not exist. Please check file. \n')
+            f.write(f'\n{err_message} \n')
         return
 
     # Dictionary mapping detector names to their corresponding functions
@@ -129,23 +136,24 @@ def process_image(image_name):
     # Process only the selected detectors
     for detector in detectors:
         try:
-            print(f"Applying {detector} to {image_name}")
+            print(f"Applying {detector} to {image_name} at {datetime.datetime.now()}")
             detector_functions[detector]()
-
+            print(f"Successfully extracted {detector} for {image_name}")
         except Exception as e:
             relocate(image_name)
-            print(f"Error extracting {detector} fingerprints from {image_name}: {str(e)}")
+            err_message = f"Error extracting {detector} fingerprints from {image_name}: {str(e)}"
+            print(err_message)
 
             error_log_file = BASE_DIR / "logs" / "fingerprinting_error_logs.txt"
             with open(error_log_file, 'a') as f:
-                f.write(f'\nError extracting {detector} fingerprints from {image_name}: {str(e)}. Please check file.\n')
+                f.write(f'\n{err_message}. Please check file.\n')
 ########################################################################################################################
 
 
 ########################################################################################################################
 # parallel processing the above function to speed things along.
 def gen_fingerprints(images_list):
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    pool = multiprocessing.Pool(psutil.cpu_count(logical=False)) # using logical cores can lead to hanging errors on Windows
     pool.map(process_image, images_list)
     pool.close()
     pool.join()
@@ -172,3 +180,5 @@ if __name__ == '__main__':
     timing_log_file = BASE_DIR / "logs" / "processing_times.txt"
     with open(timing_log_file, 'a') as f:
         f.write(f'\nFingerprint extraction - {len(images_list)} files processed in {processing_time}. {date.today()} \n')
+
+    print("Done...")
