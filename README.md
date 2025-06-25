@@ -244,14 +244,20 @@ However, development was mainly conducted on a Linux machine; for best performan
 
 Once cloned, limited use should be immediately available by running:
 
-    - pip install -r requirements.txt
-    - project_folder_setup.py
+```bash
+pip install -r requirements.txt
+project_folder_setup.py
+```
+
 
 <br>
 
 The browser-based shiny UI is launched from the terminal with the following:
 
-    - shiny run shiny_home.py
+```bash
+shiny run shiny_home.py
+```
+
 
 If ran unedited, these code snippets will produce a new project folder (outline below) in `/Documents` called "TEST", 
 and launch the shiny GUI that connects with default user parameters and visualisation/processing tools.
