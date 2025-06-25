@@ -53,12 +53,15 @@ the script:
 
 1. In the terminal in the IDE, run the following command:
 
-        `python project_folder_setup.py`
+```bash
+python project_folder_setup.py
+```
+
 OR
 
 2. Click the run script button in the top right of the Pycharm IDE
 
-    
+<br>
 
 If all goes well, the console will print all of the files and folders that have been created and the new `Tutorial` 
 directory can be explored.
@@ -93,7 +96,9 @@ In the IDE, we double click on the `shiny_home.py` script on the left tab. In th
 
 Now we launch the app; in the terminal in the IDE, run the following command:
 
-    `shiny run shiny_home.py`
+```bash
+shiny run shiny_home.py
+```
 
 <br>
 
