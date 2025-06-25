@@ -23,7 +23,7 @@ df = pd.read_csv(os.path.join(BASE_DIR, "data/user_parameters.csv"))
 params = {row["Parameter"]: float(row["Value"]) for _, row in df.iterrows()}
 
 # variable defining how much uncertainty in individual size i will accept for comparisons.
-filtered_n = float(params["number_comparisons_considered"])
+filtered_n = int(params["number_comparisons_considered"])
 ########################################################################################################################
 
 
@@ -115,23 +115,28 @@ def compare_wrapper(chunk, results_dict):
     for row in chunk.itertuples(index=False):
         compare(row.focal_image, row.test_image, results_dict)
 
-def filter_lowest_n(group, n=filtered_n):
-    result = pd.DataFrame()
-    value_columns = [col for col in group.columns if col.endswith('_values')]
+
+def filter_lowest_n(df, n):
+    # Identify columns ending with '_values'
+    value_columns = [col for col in df.columns if col.endswith('_values')]
+
+    # Convert value columns to numeric in place
+    df[value_columns] = df[value_columns].apply(pd.to_numeric, errors='coerce')
+
+    # List to hold results for each column
+    result_list = []
 
     for col in value_columns:
-        # Convert *_values columns to numeric, coercing errors to NaN
-        group[col] = pd.to_numeric(group[col], errors='coerce')
+        # Get the smallest n values for each focal_name group
+        sliced = (df.groupby('focal_name', as_index=False)
+                  .apply(lambda group: group.nsmallest(n, col))
+                  .reset_index(drop=True))
+        result_list.append(sliced)
 
-        # Sort by the current *_values column and take the top N
-        top_n = group.nsmallest(n, col)
+    # Combine results and ensure uniqueness on specific columns
+    result = pd.concat(result_list).drop_duplicates(subset=['focal_image', 'test_image'])
 
-        # Ensure focal_name is part of the result
-        top_n['focal_name'] = group['focal_name'].iloc[0]  # Add focal_name back
-
-        result = pd.concat([result, top_n])
-
-    return result.drop_duplicates()
+    return result
 
 if __name__ == '__main__':
     # Read in the dataframe, ensuring sex columns are read as strings
@@ -172,18 +177,6 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
 
-    # Set up the multiprocessing pool
-    #manager = multiprocessing.Manager()
-    #results_dict = manager.dict()
-    #pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    #print(multiprocessing.cpu_count())
-
-    # Map the compare_wrapper function to each chunk of the dataframe
-    #results = [pool.apply_async(compare_wrapper, args=(chunk, results_dict)) for chunk in chunks]
-
-    # Wait for all processes to finish
-    #for result in results:
-    #    result.get()
 
     # Create a new dataframe with the results
     results_list = []
@@ -199,7 +192,7 @@ if __name__ == '__main__':
 
     # Merge results back to the original dataframe
     final_df = pd.merge(df, results_df, on=['focal_image', 'test_image'], how='left')
-    final_df['flag'] = 'unprocessed'
+    final_df['flag'] = ''
 
     # Export the new dataframe as a CSV
     output_file = BASE_DIR / 'data' / f'comparison_results_{date.today()}.csv'
@@ -207,7 +200,7 @@ if __name__ == '__main__':
 
 
     # Group by 'focal_name' and apply the filtering function
-    filtered_df = final_df.groupby('focal_name', group_keys=True).apply(filter_lowest_n)
+    filtered_df = filter_lowest_n(final_df, filtered_n)
 
     # Export the filtered DataFrame to a CSV
     filtered_output_file = BASE_DIR / 'data' / f'filtered_comparison_results_{date.today()}.csv'
