@@ -6,10 +6,10 @@ from details_page import details_page_ui, details_page_server
 from within_individual_comparison_page import within_individual_comparison_page_ui, within_individual_comparison_page_server
 from example_matching_page import example_matching_page_ui, example_matching_page_server
 from process_starting_page import process_starting_page_ui, process_starting_page_server
-
+#from generate_and_visualise_encounter_history_page import generate_and_visualise_encounter_history_page_ui, generate_and_visualise_encounter_history_page_server
 
 # Define the base path for images
-BASE_DIR = Path.home() /"Documents"/"TEST"
+BASE_DIR = Path.home() /"Documents"/"Tutorial"
 
 
 
@@ -19,6 +19,7 @@ app_ui = ui.page_navbar(
     example_matching_page_ui(),
     process_starting_page_ui(),
     individual_matching_page_ui(),
+    #generate_and_visualise_encounter_history_page_ui(),
     within_individual_comparison_page_ui(),
     ui.nav_spacer(),
     ui.nav_control(ui.input_dark_mode()),
@@ -31,6 +32,7 @@ def server(input, output, session):
     example_matching_page_server(input, output, session, BASE_DIR)
     process_starting_page_server(input, output, session, BASE_DIR)
     individual_matching_page_server(input, output, session, BASE_DIR)
+    #generate_and_visualise_encounter_history_page_server(input, output, session, BASE_DIR)
     within_individual_comparison_page_server(input, output, session)
 
 
