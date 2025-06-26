@@ -105,7 +105,7 @@ def compare(a, b, results_dict):
 
         except Exception as e:
             results[f"{comp_info['suffix']}_values"] = "NA"
-            error_log_file = BASE_DIR / "logs" / "crossmatching_error_logs.txt"
+            error_log_file = BASE_DIR / "logs" / "crossm-atching_error_logs.txt"
             with open(error_log_file, 'a') as f:
                 f.write(f'\nAn error occurred while comparing {a} vs {b} with {comp_info["suffix"]}: {str(e)} \n')
 
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     # Print the statement
     print(f"Running {N} pairwise comparisons - this may take some time!")
 
-    log_file = BASE_DIR / "logs" / "crossmatching_error_logs.txt"
+    log_file = BASE_DIR / "logs" / "cross-matching_error_logs.txt"
     with open(log_file, 'a') as f:
         f.write(f'\n{datetime.datetime.now()} - Performing pairwise comparisons for: {", ".join(comparison_types)} \n')
 
