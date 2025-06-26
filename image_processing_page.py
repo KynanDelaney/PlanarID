@@ -49,31 +49,44 @@ def image_processing_page_ui(BASE_DIR):
     return ui.nav_panel("Image Processing",
         ui.head_content(
             ui.tags.style("""
-                .image-container {
-                    width: 100%;
-                    padding-top: 75%;
-                    position: relative;
-                    overflow: hidden;
-                    border: 2px solid #ddd;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                    margin-bottom: 20px;
-                }
-                .image-container img {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: contain;
-                }
-                .scrolling-sidebar {
-                    height: calc(100vh - 60px); /* Adjust based on your navbar height */
-                    overflow-y: auto;
-                    position: sticky;
-                    top: 0;
-                    padding-right: 15px;
-                }
-            """)
+                            .image-container {
+                                width: 100%;
+                                padding-top: 75%;
+                                position: relative;
+                                overflow: hidden;
+                                border: 2px solid #ddd;
+                                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                                margin-bottom: 20px;
+                            }
+                            .image-container img {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                object-fit: contain;
+                            }
+                            .scrolling-sidebar {
+                                height: calc(100vh - 60px);
+                                overflow-y: auto;
+                                position: sticky;
+                                top: 0;
+                                padding-right: 15px;
+                            }
+                            .scrolling-sidebar .form-group {
+                                width: 90% !important;
+                            }
+                            .scrolling-sidebar .form-control,
+                            .scrolling-sidebar .form-select,
+                            .scrolling-sidebar input[type="number"],
+                            .scrolling-sidebar input[type="range"],
+                            .scrolling-sidebar select {
+                                width: 90% !important;
+                            }
+                            .scrolling-sidebar .shiny-input-container {
+                                width: 90% !important;
+                            }
+                        """)
         ),
         ui.row(
             ui.column(3, ui.div(
@@ -111,12 +124,13 @@ def image_processing_page_ui(BASE_DIR):
                               {
                                     "Visualise Pre-processing": {"Initial Segmentation":"Initial Segmentation", "Contours":"Contours", "Annotated Pattern":"Annotated Pattern", "Filtered Mask":"Filtered Mask - For Algorithms", "Cropped Output":"Cropped Output - For Humans"},
                                        "Visualise Fingerprint Algorithms": fingerprint_options}),
-                ui.h3("Additional parameters - Effects elsewhere"),
+                ui.h3(ui.HTML("Additional parameters -<br>Effects elsewhere")),
                 ui.input_numeric("cutoff_size", "Expected max. mask size (pixels)", min=0, max=25000000, value=user_parameters.get("cutoff_size", 6000000), step=1),
                 ui.input_numeric("size_offset", "Accepted body size difference (units)", min=0, max=1000, value=user_parameters.get("size_offset", 50), step=.01),
                 ui.input_numeric("number_comparisons_considered", "Number of pairwise comparisons considered", min=1, max=40,
                                  value=user_parameters.get("number_comparisons_considered", 20), step=1),
-                ui.input_action_button("save", "Save parameters"),
+                ui.input_action_button("save", "Save parameters",
+                                       class_="btn-primary"),
                 ui.div(style="height: 20px"),
             ), class_="scrolling-sidebar"
                       ),
@@ -128,7 +142,7 @@ def image_processing_page_ui(BASE_DIR):
                               ui.input_file("file_single", "Choose an image (JPEG or PNG)", accept=[".jpg", ".jpeg", ".png"]),
                               ),
                     ui.column(6,
-                              ui.input_checkbox("downgrade_image", "Reduce image quality", value = False),
+                              ui.input_checkbox("downgrade_image", "Reduce image quality", value = True),
                               ),
                 ),
                 ui.output_ui("single_image_output"),
