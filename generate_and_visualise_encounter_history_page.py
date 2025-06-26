@@ -2,6 +2,7 @@ from shiny import ui, render, reactive
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
+from datetime import date
 
 
 def generate_and_visualise_encounter_history_page_ui():
@@ -15,7 +16,11 @@ def generate_and_visualise_encounter_history_page_ui():
                               ui.input_file("alias_upload", "Choose CSV file", accept=[".csv"])
                               ),
                     ui.column(6,
-                              ui.input_checkbox("render_graph", "Render graph", value=False),
+                              ui.row(ui.input_checkbox("render_graph", "Render graph", value=False),
+                                     ),
+                              ui.row(ui.input_action_button("save_encounters", "Save parameters",
+                                                            class_="btn-primary", width="35%"),
+                                     ),
                               ),
                 )
             )
@@ -25,7 +30,7 @@ def generate_and_visualise_encounter_history_page_ui():
         ),
         ui.card(
             {"style": "height: 80vh; width: 80vh; margin: 20px auto;"},  # Make card square and centered
-            ui.card_header("Visualise Pattern Clusters"),
+            ui.h3("Visualise Pattern Clusters"),
             ui.output_plot("pattern_clusters", height="80vh", width="80vh")
         ),
     )
@@ -133,6 +138,9 @@ def generate_and_visualise_encounter_history_page_server(input, output, session,
         if individual_counts is None:
             return ui.p("Please upload data to view encounter information.")
 
+        # Calculate the number of unique individuals
+        num_unique_individuals = individual_counts.shape[0]
+
         return ui.div(
             ui.tags.style("""
                 .aligned-table th, .aligned-table td {
@@ -146,9 +154,10 @@ def generate_and_visualise_encounter_history_page_server(input, output, session,
                 }
             """),
             ui.h3("Encounter Data"),
+            ui.p(f"Number of individuals present in this photographic record: {num_unique_individuals}"),
             ui.row(
                 ui.column(6,
-                          ui.h4("Individual Counts"),
+                          ui.h4("Individual-level"),
                           ui.div(
                               ui.HTML(
                                   individual_counts.to_html(index=False, classes="table table-striped aligned-table")),
@@ -156,7 +165,7 @@ def generate_and_visualise_encounter_history_page_server(input, output, session,
                           )
                           ),
                 ui.column(6,
-                          ui.h4("Count Summary"),
+                          ui.h4("Population-level"),
                           ui.div(
                               ui.HTML(count_summary.to_html(index=False, classes="table table-striped aligned-table")),
                               class_="scrollable-table"
@@ -164,3 +173,29 @@ def generate_and_visualise_encounter_history_page_server(input, output, session,
                           )
             )
         )
+
+    @reactive.effect
+    @reactive.event(input.save_encounters)
+    def _():
+        df, error = load_data()
+        if error or df.empty:
+            ui.notification_show("Please upload data first!", type="error")
+            return
+
+        try:
+            # Process the data to get df_unique
+            df, _ = convert_matches_to_chains(df)
+            df_unique = convert_chains_to_census(df)
+
+            print(df_unique)
+
+            df_unique['encounter_occasion'] = df_unique['alias'].apply(lambda x: x.split("_")[0])
+
+            # Save the file
+            output_file = BASE_DIR / 'data' / f'encounter_history_{date.today()}.csv'
+            df_unique.to_csv(output_file, mode='w', header=True, index=False)
+
+            ui.notification_show("Encounter history saved!", type="message")
+
+        except Exception as e:
+            ui.notification_show(f"Error saving file: {str(e)}", type="error")
