@@ -526,6 +526,7 @@ Core functions:
 
 Quality of life:
 - Enable user control over multiple or single matches allowed in `Individual Matching` page.
+- More flexible within-individual quality control method to handle matched images from the end-stage of the pipeline.
 - Better handling of `.csv`, output files, and parameter settings.
 - Automate batch-processing steps (bundle `Crop and rotate`, `Extract fingerprints`, `Generate pairwise list`, and 
 `Pairwise comparisons` together).
