@@ -97,7 +97,7 @@ In the IDE, we double click on the `shiny_home.py` script on the left tab. In th
 Now we launch the app; in the terminal in the IDE, run the following command:
 
 ```bash
-shiny run shiny_home.py
+shiny run planar-id.py
 ```
 
 <br>

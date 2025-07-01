@@ -255,7 +255,7 @@ project_folder_setup.py
 The browser-based shiny UI is launched from the terminal with the following:
 
 ```bash
-shiny run shiny_home.py
+shiny run planar-id.py
 ```
 
 
@@ -374,14 +374,35 @@ written to a results .csv. </figcaption>
 
 <br>
 
+The **Generate and Visualise Encounter History** page is a convenience tool for converting the output of confirmed matches
+(`matches_YYYY_MM_DD.csv`) into a census-style encounter history. This tool renders tables of encounter frequencies per
+individual identified in the photographic record, and a population-level distribution of encounter frequencies (Figure 12). 
+Saving the census-style history makes the output of PlanarID more readily usable by mark-recapture packages in R, but is 
+not strictly necessary! 
+
+The network graph can be used as a diagnostic tool for the matching output (or just looks nice!). Chains of matched images
+should be clear and disconnected from other chains. If there are erroneous matches, these may be apparent as two distinct
+chains of images connected by a single node - this should prompt some investigation into that collection of images.
+
+
+<p align="center">
+  <img src="readme_media/PlanarID_generate_and_visualise_encounter_history.png" width="75%" style="border: 1px solid #005F6B; padding: 5px;">
+  <figcaption align="center">Fig. 12: A convenience tool for summarising and saving the capture record in an accessible format.
+The user selects a "matches" csv outputted from the "Individual matching" process. </figcaption>
+</p>
+
+<br>
+
+<br>
+
 The **Within-Individual Quality Control** page takes the output of within-individual comparisons (a `.csv` file) and shows
-network graphs of apparent within-individual dissimilarity and a gallery of all images of the chosen individual (Fig. 12).
+network graphs of apparent within-individual dissimilarity and a gallery of all images of the chosen individual (Fig. 13).
 
 <br>
 
 <p align="center">
   <img src="readme_media/PlanarID_quality_control.png" width="75%" style="border: 1px solid #005F6B; padding: 5px;">
-  <figcaption align="center">Fig. 12: A network graph of within-individual photographic example similarity and a gallery 
+  <figcaption align="center">Fig. 13: A network graph of within-individual photographic example similarity and a gallery 
 of relevant images for quality-control. In the graph, correctly named images (ascribed to the right individual) should form
 a cluster, and obvious outliers will be removed from that cluster.</figcaption>
 </p>
@@ -482,9 +503,30 @@ chosen algorithms (a smaller, more manageable file). This second, filtered file 
 AKAZE, ORB, and SIFT are freely-available computer-vision algorithms bundled with `opencv` in Python.
 SURF, however, is under a [non-commercial licence](https://people.ee.ethz.ch/~surf/download.html) and not bundled with the default `opencv` library.
 To enable SURF, `opencv` needs to be compiled with "non-free" algorithms enabled. 
-I have had mixed success with this on Windows but [this page](https://www.samontab.com/web/2023/02/installing-opencv-4-7-0-in-ubuntu-22-04-lts/) outlines how to achieve this on Linux.
+We have had mixed success with this on Windows but [this page](https://www.samontab.com/web/2023/02/installing-opencv-4-7-0-in-ubuntu-22-04-lts/) outlines how to achieve this on Linux.
 
 AKAZE, ORB, and SIFT are very effective at generating _fingerprints_ for comparison, so little is lost if SURF is not 
 available to you. Further, the shiny GUI and pipeline will only present algorithms that are available to you, so an 
 absence of SURF will not lead to errors or poor performance.
 
+<br>
+
+## Upgrade path
+
+The current version of PlanarID is an effective tool for identifying individuals on the basis of unique, binary, colour-based
+patterns. Future focuses for development are quality of life improvements for the UI, and methodological improvements for
+the pipeline.
+
+Core functions:
+- Expand image processing to extract and process multiple colour ranges simultaneously.
+- Add additional fingerprinting algorithms/ alternative fingerprint comparison methods.
+- Add user control over settings for parallel processes (for RAM-limited computers).
+
+<br>
+
+Quality of life:
+- Enable user control over multiple or single matches allowed in `Individual Matching` page.
+- Better handling of `.csv`, output files, and parameter settings.
+- Automate batch-processing steps (bundle `Crop and rotate`, `Extract fingerprints`, `Generate pairwise list`, and 
+`Pairwise comparisons` together).
+- Format and distribute PlanarID as a python package.

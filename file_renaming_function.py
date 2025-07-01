@@ -27,7 +27,7 @@ def rename_and_copy_images(root_folder, target_folder):
                         _, ext = os.path.splitext(image_name)
                         
                         # Create the new image name
-                        new_image_name = f"{date_folder}_{individual_folder}_example{count}{ext}"
+                        new_image_name = f"{date_folder}_{individual_folder}_{count}{ext}"
                         
                         # Get the full path for the old image name
                         old_image_path = os.path.join(individual_folder_path, image_name)
