@@ -3,15 +3,12 @@ from pathlib import Path
 from datetime import date
 
 
-# Define base project location - Documents, Images, wherever
-BASE_DIR = Path.home() / "Documents"
-# Choose a name for this project
-project = "TEST"
-
-
+# Project name
+project_name = "Tutorial"
 
 # Set up project directory
-project_directory = BASE_DIR / project
+project_directory = Path.home() / "Documents" / project_name
+
 
 def create_directory(directory):
     try:
@@ -23,7 +20,7 @@ def create_directory(directory):
 def create_log_file(log_path, log_description):
     try:
         with open(log_path, 'x') as f:
-            f.write(f'{log_description} {project} database. \nCreated {date.today()} \n')
+            f.write(f'{log_description} {project_name} database. \nCreated {date.today()} \n')
     except FileExistsError:
         print(f"The '{log_description}' file already exists")
 

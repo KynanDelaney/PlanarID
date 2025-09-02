@@ -8,8 +8,11 @@ from example_matching_page import example_matching_page_ui, example_matching_pag
 from process_starting_page import process_starting_page_ui, process_starting_page_server
 from generate_and_visualise_encounter_history_page import generate_and_visualise_encounter_history_page_ui, generate_and_visualise_encounter_history_page_server
 
+# Project name
+project_name = "Tutorial"
+
 # Define the base path for images
-BASE_DIR = Path.home() /"Documents"/"TEST"
+BASE_DIR = Path.home() /"Documents"/project_name
 
 
 
