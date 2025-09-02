@@ -48,7 +48,7 @@ cloned the repository from github, and installed the package requirements listed
 repository `readme.md`). Therefore, for this tutorial, our first task is to create a project directory.
 
 In the IDE (we have chosen Pycharm Community Edition for this example), double click on the `project_folder_setup` script 
-on the left tab. In the script editor, name the project `Tutorial` in the highlighted line (line 9; Figure 2). Now we run
+on the left tab. In the script editor, name the project `Tutorial` in the highlighted line (line 7; Figure 2). Now we run
 the script:
 
 1. In the terminal in the IDE, run the following command:
@@ -83,7 +83,7 @@ in the `Tutorial` directory.
 We need the shiny app and project directory to be looking in the same place for images; we set this manually in the `shiny_home.py`
 script.
 
-In the IDE, we double click on the `shiny_home.py` script on the left tab. In the script editor, we set the base directory to
+In the IDE, we double click on the `planar-id.py` script on the left tab. In the script editor, we set the base directory to
 `Tutorial` in the highlighted line (line 12; Figure 2). 
 
 <p align="center" >
@@ -100,6 +100,15 @@ Now we launch the app; in the terminal in the IDE, run the following command:
 shiny run planar-id.py
 ```
 
+The following code will be printed in the terminal - if the app doesn't open automatically, click on the `http` provided, or copy it into your web 
+browser to view and interact with the app:
+
+```bash
+INFO:     Started server process [XXXXX]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
 <br>
 
 ## Set image thresholds to extract identifying patterns
@@ -114,11 +123,11 @@ Good starting values for annotating the elytral pattern in these beetles are out
 
 <p align="left"><em>Table 2: Colour thresholds for the tutorial photographic record. </em></p>
 
-|             |  Lower  |  Upper  |
-|:------------|:-------:|:-------:|
-| Hue         |   11    |   40    |
-| Saturation  |   75    |   240   |
-| Value       |   80    |   240   |
+|             | Lower | Upper |
+|:------------|:-----:|:-----:|
+| Hue         |  11   |  30   |
+| Saturation  |  75   |  240  |
+| Value       |  85   |  240  |
 
 <br>
 
@@ -232,4 +241,4 @@ photographic record.</figcaption>
 
 The output of clicking `No matches here` or `This is a match` is a file called `matches_YYYY-MM-DD.csv` which is a growing 
 compendium of individuals' aliases in the photographic record. This list of aliases can be converted to a census history
-of individuals in R or Python (future convenience functions will be detailed in the repository `.readme`)
+of individuals in R or Python or passed to the **Generate and Visualise Encounter History** tool in the app.
