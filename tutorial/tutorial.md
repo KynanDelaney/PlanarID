@@ -13,7 +13,7 @@ Tutorial contents:
 
 - tutorial images folder: 22 images of 3 individuals taken across 10 sampling Occasions. 
 - tutorial_df: A `.csv` of "capture data" that includes within-week names, date of capture, individual sex, and body size (Table 1).
-
+- Brief examples of other patterns to segment and process (below).
 <br>
 
 <table>
@@ -244,3 +244,154 @@ compendium of individuals' aliases in the photographic record. This list of alia
 of individuals in R or Python or passed to the **Generate and Visualise Encounter History** tool in the app.
 
 To close the app, click on the terminal in the IDE and hit CTRL+C to quit.
+
+
+## Example image segmentation and fingerprinting
+
+Different systems and patterns require different parameter values to segment for fingerprinting. Below, I include some 
+example parameter values for different kinds of backgrounds/patterns that we may want to process.
+
+A butterfly with black and green wings wings, against a light, beige background of sand. Image sourced from 
+[here](https://www.pickpik.com/green-malachite-butterfly-green-niagara-butterfly-conservatory-exotic-insect-wildlife-black-67926).
+Setting colour thresholds to separate green patches from a beige background might be difficult. Instead, we can focus on
+the black parts of the body and wings to segment the entire butterfly from the background (Fig. 6). We capture dark regions
+by setting `value` between 0 and 150. `threshold_value` is a separate parameter that also needs to be lowered to accept 
+segmenting on dark areas. Here, the wings and body form one contiguous region of dark pattern, so we can set `num_patches` 
+to one. When it comes to generating *fingerprints*, we will only be describing features along the wings and body, removing 
+any background noise.
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+
+  <!-- Table -->
+  <div style="flex: 1; max-width: 200px; display: flex; justify-content: center;">
+    <table>
+      <tr><th>Parameter</th><th>Value</th></tr>
+      <tr><td>hue_low</td><td>0</td></tr>
+      <tr><td>saturation_low</td><td>0</td></tr>
+      <tr><td>value_low</td><td>0</td></tr>
+      <tr><td>hue_high</td><td>179</td></tr>
+      <tr><td>saturation_high</td><td>255</td></tr>
+      <tr><td>value_high</td><td>150</td></tr>
+      <tr><td>kernel_size</td><td>7</td></tr>
+      <tr><td><strong>threshold_value</strong></td><td><strong>0</strong></td></tr>
+      <tr><td>num_patches</td><td>1</td></tr>
+    </table>
+  </div>
+
+  <!-- Images with labels -->
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/green_butterfly.jpg" alt="Image 1" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Original Image</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/segmented_butterfly.png" alt="Image 2" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Segmented image/pattern</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/akaze_butterfly.png" alt="Image 3" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Feature Points restricted to wing pattern</span>
+  </div>
+
+</div>
+<p align="center"><em>Figure 6: The key parameter values and stages of fingerprinting wing patches in a butterfly with dark wings 
+and light patches that are similar to background colours.</em></p>
+
+<br>
+
+A butterfly with white and red markings on black wings, against a neutral woody-brown background. Image sourced from
+[here](https://en.wikipedia.org/wiki/Vanessa_atalanta#/media/File:Red_admiral_(Vanessa_atalanta)_Hungary.jpg).
+Extracting a bold colour like red is relatively straightforward using HSV values (listed below; Fig. 7). There are 4 distinct
+regions of red patches, anterior-posterior along each wing, and laterally across the back of each wing, so we set `num_patches`
+to four. We might expect good performance of fingerprinting the red regions to discriminate between individuals.
+
+Our major issue here is that we must focus on one focal colour - choosing red means we ignore white patches that might be
+of value for identification. White regions can be extracted separately, but this may be difficult against a light background. 
+Further, some light patches are diffuse, and other are tinged blue, making precise colour thresholding labour intensive.
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+
+  <!-- Table -->
+  <div style="flex: 1; max-width: 200px; display: flex; justify-content: center;">
+    <table>
+      <tr><th>Parameter</th><th>Value</th></tr>
+      <tr><td>hue_low</td><td>0</td></tr>
+      <tr><td>saturation_low</td><td>0</td></tr>
+      <tr><td>value_low</td><td>90</td></tr>
+      <tr><td>hue_high</td><td>10</td></tr>
+      <tr><td>saturation_high</td><td>255</td></tr>
+      <tr><td>value_high</td><td>240</td></tr>
+      <tr><td>kernel_size</td><td>7</td></tr>
+      <tr><td>threshold_value</td><td>10</td></tr>
+      <tr><td>num_patches</td><td>4</td></tr>
+    </table>
+  </div>
+
+  <!-- Images with labels -->
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/red_butterfly.jpg" alt="Image 1" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Original Image</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/segmented_red.png" alt="Image 2" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Segmented red pattern</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/akaze_red.png" alt="Image 3" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Feature Points restricted to red patches</span>
+  </div>
+
+</div>
+<p align="center"><em>Figure 7: The key parameter values and stages of fingerprinting wing patterns in a butterfly with 
+bold red patches against distinct background colours.</em></p>
+
+<br>
+
+A burying beetle with discrete orange colour patches on a black body, against a blue background. Image sourced from our
+testing population. Segmenting orange patterns from blue and black is almost trivial (Parameters outlined in Fig. 8).
+`threshold_value` is returned to the default greyscale value of 50. We expect 4 discrete patches in this species, so
+`num_patches` is set to four. `kernel_size` is left at default, but higher values will smooth out jagged edges of extract
+colour patches.
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+
+  <!-- Table -->
+  <div style="flex: 1; max-width: 200px; display: flex; justify-content: center;">
+    <table>
+      <tr><th>Parameter</th><th>Value</th></tr>
+      <tr><td>hue_low</td><td>0</td></tr>
+      <tr><td>saturation_low</td><td>75</td></tr>
+      <tr><td>value_low</td><td>85</td></tr>
+      <tr><td>hue_high</td><td>25</td></tr>
+      <tr><td>saturation_high</td><td>240</td></tr>
+      <tr><td>value_high</td><td>240</td></tr>
+      <tr><td>kernel_size</td><td>7</td></tr>
+      <tr><td>threshold_value</td><td>50</td></tr>
+      <tr><td>num_patches</td><td>4</td></tr>
+    </table>
+  </div>
+
+  <!-- Images with labels -->
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/burying_beetle.png" alt="Image 1" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Original Image</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/annotated_beetle.png" alt="Image 2" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Annotated orange pattern</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+    <img src="../readme_media/akaze_beetle.png" alt="Image 3" style="width: 100%;">
+    <span style="margin-top: 5px; font-weight: bold;">Feature Points restricted to orange patches</span>
+  </div>
+
+</div>
+<p align="center"><em>Figure 8: The key parameter values and stages of fingerprinting elytral patterns in a burying beetle
+- bold orange patches against distinct body and background colours.</em></p>
+
+<br>
