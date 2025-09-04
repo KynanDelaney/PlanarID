@@ -100,8 +100,8 @@ Now we launch the app; in the terminal in the IDE, run the following command:
 shiny run planar-id.py
 ```
 
-The following code will be printed in the terminal - if the app doesn't open automatically, click on the `http` provided, or copy it into your web 
-browser to view and interact with the app:
+The following code will be printed in the terminal - if the app doesn't open automatically, click on the `http link` provided, 
+or copy it into your web browser to view and interact with the app:
 
 ```bash
 INFO:     Started server process [XXXXX]
@@ -242,3 +242,5 @@ photographic record.</figcaption>
 The output of clicking `No matches here` or `This is a match` is a file called `matches_YYYY-MM-DD.csv` which is a growing 
 compendium of individuals' aliases in the photographic record. This list of aliases can be converted to a census history
 of individuals in R or Python or passed to the **Generate and Visualise Encounter History** tool in the app.
+
+To close the app, click on the terminal in the IDE and hit CTRL+C to quit.

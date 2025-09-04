@@ -35,6 +35,7 @@ for i, component in enumerate(components):
 
 # Add chain information to the DataFrame
 df['chain'] = df['focal_name'].map(chain_map)
+df['encounter_occasion'] = df['focal_name'].apply(lambda x: x.split("_")[0])
 
 # Display the DataFrame
 print(df)

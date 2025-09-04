@@ -11,10 +11,16 @@ wing veining, or ink-blot style blobs) are its intended focus. Animals with diff
 regions fade into each other rather than having hard borders may still be analysed with this set-up, but performance may
 be poor.
 
+This readme contains the basics of getting started with the pipeline and app. There is also a tutorial folder in this repo
+for a worked example of processing photos and identifying individuals in a photographic record. Finally, there are additional
+markdown files - `Photographic datasets and mark-recapture - explained` and `Photography best practices` - that contain 
+supplementary notes a user might want to check out.
+
 <br>
 
 ## Getting started with PlanarID
-I recommend installing an IDE (Pycharm Community Edition, Spyder, etc.) and cloning this repository. 
+I recommend installing an IDE (Pycharm Community Edition, Spyder, etc.) and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+and cloning this repository. 
 
 <table>
   <tr>
@@ -36,13 +42,21 @@ However, development was mainly conducted on a Linux machine; for best performan
 
 <br>
 
+### Downloading Planar-ID files
+
+On launching your chosen IDE,this repository can be cloned with Git using the repo url (https://github.com/KynanDelaney/PlanarID.git).
+A Python interpreter may need to be configured (i.e., telling your IDE program where which version of Python to use). Most 
+IDEs will also suggest setting up a virtual environment, which is recommended.
+
+<br>
+
 ### Installing packages and project setup
 
 Once cloned, limited use should be immediately available by running the following commands in the console of your chosen IDE:
 
 ```bash
 pip install -r requirements.txt
-project_folder_setup.py
+python project_folder_setup.py
 ```
 
 This will install the necessary Python libraries, and, by default, create a working folder called "Tutorial" in the 
@@ -70,13 +84,15 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 ```
 
+To close the app, click on the console and hit CTRL+C to quit.
+
 By default, the code snippets above will produce a new project folder (outline below) in `/Documents` called "Tutorial", 
 and launch the shiny GUI that connects with default user parameters and visualisation/processing tools. For more guidance, 
 example photos and corresponding tutorial are available in the `tutorial` folder of this repo.
 
 <br>
 
-### General details
+## General details
 To customise project names, one need only change the project name defined at the start of the `project_folder_setup.py`
 and `planar-id.py` scripts to the desired name. This facilitates moving between several projects with minimal conflict.
 
@@ -111,15 +127,23 @@ General folder structure of active projects - produced by `project_folder_setup.
 └───scripts
 ```
 
-Initial (preferrably colour-corrected) images should be deposited in the `unprocessed_photos` folder. Many app functions
-rely on calling images and files from known locations - each function by default calls from and desposits into the relevant
-locations without user intervention.
+<br>
+
+Initial (preferrably colour-corrected) images should be deposited in the `unprocessed_photos` folder. The `Photography best
+practices` markdown file contains information on suitable methods of image capture and handling. Many app functions
+rely on calling images and files from known locations - each function by default calls from and deposits into the relevant
+locations without user intervention (outlined below).
 
 <br>
 
-### GUI Overview
+## GUI Overview
 The browser-based GUI should open to a home page with details about the current contents of the project directory and 
 various subfolders (Fig. 1). There is also a table of user-editable values for all stages of processing.
+
+The "Naive Assessment" at the bottom of the page indicates the maximum number of pairwise comparisons possible in a dataset
+of N images using the formula (N*(N-1))/2. Large photographic datasets (> 10,000 images) will quickly result in absurd 
+numbers of potential comparisons (N<sub>10,000</sub> = 49,995,000 potential comparisons). In practice, filtering allowable
+comparisons by date of capture, body size, or sex, reduces actual comparisons to more reasonable levels.
 
 <br>
 
@@ -238,14 +262,14 @@ a cluster, and obvious outliers will be removed from that cluster.</figcaption>
 
 <br>
 
-### Core app processes and values
+## Core app processes and values
 
 There are many settings of colour thresholds, image blurring, and _fingerprint_ sensitivity to obvious or subtle marks. 
 Some key details of these parameters, their consequences, and use are outlined below.
 
 <br>
 
-#### Splitting images into _pattern_ and _not pattern_
+### Splitting images into _pattern_ and _not pattern_
 This involves taking high quality and/or colour-corrected images and using colour thresholding (Figure 2;8) to extract regions of the
 _pattern_. The process can be visualised in the shiny UI and all possible values played with. When suitable values have 
 been chosen, this process can be applied at scale. This step results in a cropped version of the original image and a 
@@ -280,7 +304,7 @@ as in our colour-thresholding.</em></p>
 
 <br>
 
-#### Extracting _fingerprints_ from processed images
+### Extracting _fingerprints_ from processed images
 This involves processing _masks_ of each individuals' _pattern_ and calculating keypoints and descriptors that describe 
 large areas of _pattern_, turning points, colour gradients, and corners.
 These _fingerprints_ are saved as `.txt` files for later use.
@@ -294,7 +318,7 @@ Four algorithms (available for non-commercial use) are available - AKAZE, ORB, S
 
 <br>
 
-#### Generating list of pairwise comparisons to run
+### Generating list of pairwise comparisons to run
 This stage involves providing a `.csv` of focal individuals (i.e., individuals in the photographic record you want to 
 identify) and a `.csv` of a test individuals (i.e., the bank of photographed individuals you want to compare against).
 These `.csv` files can be identical, partially overlapping, or non-overlapping, depending on when data were collected 
@@ -309,7 +333,7 @@ while accepted error in body size is a saved parameter (below).
 
 <br>
 
-#### Conducting pairwise comparisons
+### Conducting pairwise comparisons
 
 This stage takes the output of the previous step (a `.csv` file) and conducts the appropriate comparisons. A _distance_ value 
 is generated for each pairwise comparison according to one or more of four _fingerprint_ algorithms. A large _distance_ means 
@@ -498,6 +522,7 @@ Core functions:
 - Expand image processing to extract and process multiple colour ranges simultaneously.
 - Add additional fingerprinting algorithms/ alternative fingerprint comparison methods.
 - Add user control over settings for parallel processes (for RAM-limited computers).
+- Configure available filtering values when generating pairwise lists.
 
 <br>
 
