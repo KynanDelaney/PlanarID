@@ -240,8 +240,25 @@ photographic record.</figcaption>
 <br>
 
 The output of clicking `No matches here` or `This is a match` is a file called `matches_YYYY-MM-DD.csv` which is a growing 
-compendium of individuals' aliases in the photographic record. This list of aliases can be converted to a census history
-of individuals in R or Python or passed to the **Generate and Visualise Encounter History** tool in the app.
+compendium of individuals' aliases in the photographic record. 
+
+# Export encounter history
+
+The list of aliases can be converted to a census history directly within PlanarID by passing the `matches_YYYY-MM-DD.csv`
+to the  to the **Generate and Visualise Encounter History** (Figure 6) tool and hitting `Save encounters`. The resulting
+`encounter_history_YYYY-MM-DD.csv` returns a census-style recapture history.
+This page also returns summary tables on how many times each individual was present in the photographic record, the 
+distribution of frequencies of re-occurrence in the record, as well as a basic network graph detailing how each photographs 
+of each individual were linked over time.
+
+The `matches_YYYY-MM-DD.csv` can also be easily processed in R or Python.
+
+<p align="center" >
+  <img src="../readme_media/PlanarID_generate_and_visualise_encounter_history.png" width="80%" style="border: 1px solid #005F6B; padding: 5px;">
+  <figcaption align="center">Figure 6: A final convenience tool to convert manually-determined matches to an interpretable census history.</figcaption>
+</p>
+
+<br>
 
 To close the app, click on the terminal in the IDE and hit CTRL+C to quit.
 

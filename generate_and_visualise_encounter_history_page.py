@@ -18,7 +18,7 @@ def generate_and_visualise_encounter_history_page_ui():
                     ui.column(6,
                               ui.row(ui.input_checkbox("render_graph", "Render graph", value=False),
                                      ),
-                              ui.row(ui.input_action_button("save_encounters", "Save parameters",
+                              ui.row(ui.input_action_button("save_encounters", "Save encounters",
                                                             class_="btn-primary", width="35%"),
                                      ),
                               ),
