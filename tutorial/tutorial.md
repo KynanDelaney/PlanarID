@@ -3,7 +3,7 @@
 For a practical guide on how to analyse a photographic record, we have included a selection of images of our study species
 the burying beetle, *Nicrophorus vespilloides*. The tutorial photographic record contains 22 photos of three individuals (Figure 1), 
 imaged on ten different dates. These photos have been appropriately named with the ```[date]_[within-week name]_[example]``` 
-format. The`.csv` (`tutorial_df`) contains information about individual sex, within-week names, date of "capture" and
+format. The `.csv` (`tutorial_df`) contains information about individual sex, within-week names, date of "capture" and
 body size. These data have been provided to mimic realistic capture data - size and sex data
 
 Together, this is everything we need to get started identifying individuals in a photographic record.
@@ -73,10 +73,10 @@ directory can be explored.
 
 <br>
 
-## Add the photographic record to the directory
+## Add the example data to the project directory
 
 Once the project directory has been made, we can copy and paste our tutorial images into the `unprocessed_photos` folder 
-in the `Tutorial` directory.
+in the `Tutorial` directory. We also need to drop the `tutorial_df.csv` into the `data` folder in the `Tutorial` directory.
 
 ## Point the shiny app at the current directory
 
@@ -242,7 +242,7 @@ photographic record.</figcaption>
 The output of clicking `No matches here` or `This is a match` is a file called `matches_YYYY-MM-DD.csv` which is a growing 
 compendium of individuals' aliases in the photographic record. 
 
-# Export encounter history
+## Export encounter history
 
 The list of aliases can be converted to a census history directly within PlanarID by passing the `matches_YYYY-MM-DD.csv`
 to the  to the **Generate and Visualise Encounter History** (Figure 6) tool and hitting `Save encounters`. The resulting
@@ -258,15 +258,37 @@ The `matches_YYYY-MM-DD.csv` can also be easily processed in R or Python.
   <figcaption align="center">Figure 6: A final convenience tool to convert manually-determined matches to an interpretable census history.</figcaption>
 </p>
 
+This page assigns incremental names to individuals as they appear and are identified in the photographic record. The naming
+scheme is simply `Individual_[N]`. The `.csv` output lists every occasion on which an individual was present, with their
+alias in that sampling occasion included (Table 4).
+
 <br>
+
+<p align="left"><em>Table 4: A neatly formatted census-style recapture history that can be passed to mark-recapture analysis packages in R.</em></p>
+
+| individual   | alias| encounter_occasion|
+|:-------------|:-----|:-----|
+| Individual_1 |06-08_C1CC-05|06_08|
+| Individual_2 |06-13_K16D-11|06_13|
+| Individual_3 |06-14_C9B-11|06-14|
+| Individual_1 |06-29_C1CC-05|06-29|
+| Individual_2 |06-29_K15D-11|06-29|
+| ...          |...|...|
+| Individual_1 |05-20_C1CC-05|05-20|
+
+<br>
+
+## Closing the app
 
 To close the app, click on the terminal in the IDE and hit CTRL+C to quit.
 
 
-## Example image segmentation and fingerprinting
+# Example image segmentation and fingerprinting
 
 Different systems and patterns require different parameter values to segment for fingerprinting. Below, I include some 
 example parameter values for different kinds of backgrounds/patterns that we may want to process.
+
+## Black and green butterflies
 
 A butterfly with black and green wings wings, against a light, beige background of sand. Image sourced from 
 [here](https://www.pickpik.com/green-malachite-butterfly-green-niagara-butterfly-conservatory-exotic-insect-wildlife-black-67926).
@@ -317,6 +339,7 @@ and light patches that are similar to background colours.</em></p>
 
 <br>
 
+## Red, black, and white butterflies
 A butterfly with white and red markings on black wings, against a neutral woody-brown background. Image sourced from
 [here](https://en.wikipedia.org/wiki/Vanessa_atalanta#/media/File:Red_admiral_(Vanessa_atalanta)_Hungary.jpg).
 Extracting a bold colour like red is relatively straightforward using HSV values (listed below; Fig. 7). There are 4 distinct
@@ -367,6 +390,7 @@ bold red patches against distinct background colours.</em></p>
 
 <br>
 
+## Burying beetles
 A burying beetle with discrete orange colour patches on a black body, against a blue background. Image sourced from our
 testing population. Segmenting orange patterns from blue and black is almost trivial (Parameters outlined in Fig. 8).
 `threshold_value` is returned to the default greyscale value of 50. We expect 4 discrete patches in this species, so
